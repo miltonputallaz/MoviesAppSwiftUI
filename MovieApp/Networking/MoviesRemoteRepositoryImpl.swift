@@ -7,8 +7,13 @@
 
 import Foundation
 import Alamofire
+import Resolver
 
 class MoviesRemoteRepositoryImpl: MoviesRemoteRepository {
+    @Injected var userDefaults: UserDefaults
+    @Injected var interceptor: ApiRequestInterceptor
+    
+    
     let GET_NOW_PLAYING_PATH = "/movie/now_playing"
 
     func getNowPlaying(language: String, page: Int, region: String?, completion: @escaping (RemoteResult<ListOfType<Movie>>) -> Void) {
@@ -26,12 +31,13 @@ class MoviesRemoteRepositoryImpl: MoviesRemoteRepository {
             "\(BaseRemoteRepository.BASE_URL)\(GET_NOW_PLAYING_PATH)",
             method: .get,
             parameters: parameter,
-            headers: BaseRemoteRepository.headers
+            headers: BaseRemoteRepository.headers,
+            interceptor: interceptor
         ).responseDecodable { (response: DataResponse<ListOfType<Movie>, AFError>) in
             print(response)
             switch response.result {
             case .success(let movies):
-                print(movies)
+                self.userDefaults.set(Date.now, forKey: UserDefaultKeys.now_playing_timestamp)
                 completion(RemoteResult.success(movies))
             case .failure(let error):
                 completion(RemoteResult.error(ApiError(code: error.responseCode ?? 500 , errorString: error.errorDescription!)))

@@ -11,28 +11,10 @@ import Resolver
 class MoviesRepositoryImpl: MoviesRepository {
     
     
-    @Injected var moviesRemoteRepository: MoviesRemoteRepository
-    @Injected var moviesLocalRepository: MoviesLocalRepository
+    @Injected var getNowPlaying: GetNowPlaying
     
     func getNowPlaying(completion:  @escaping (LocalResult<ListOfType<Movie>, MoviesErrors>) -> Void) {
-        moviesRemoteRepository.getNowPlaying(region: nil) { result in
-            print(result)
-            switch result {
-            case .success(let moviesList):
-                self.moviesLocalRepository.save(movies: moviesList.results) { savingResult in
-                    switch savingResult {
-                    case .emptySuccess:
-                        completion(LocalResult.emptySuccess)
-                    case .success(_):
-                        print("Success")
-                    case .error(let savingError):
-                        completion(LocalResult.error(savingError))
-                    }
-                }
-            case .error:
-                completion(LocalResult.error(MoviesErrors.emptyMovies))
-            }
-        }
+        getNowPlaying.execute(completion: completion)
     }
     
     

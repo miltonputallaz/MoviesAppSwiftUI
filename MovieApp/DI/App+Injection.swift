@@ -17,6 +17,9 @@ extension Resolver: ResolverRegistering {
       register { MoviesRemoteRepositoryImpl() }.scope(.application).implements(MoviesRemoteRepository.self)
       register { MoviesLocalRepositoryImpl() }.scope(.application).implements(MoviesLocalRepository.self)
       register { BaseLocalRepository() }.scope(.application)
+      register { UserDefaults.standard }.scope(.application)
+      register { ApiRequestInterceptor() }.scope(.application)
+      register { GetNowPlayingImpl() }.scope(.application).implements(GetNowPlaying.self)
   }
 }
 

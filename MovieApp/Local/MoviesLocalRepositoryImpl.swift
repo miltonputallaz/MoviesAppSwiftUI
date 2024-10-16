@@ -6,17 +6,14 @@
 //
 
 import Foundation
-import SwiftUI
 import Resolver
 
 class MoviesLocalRepositoryImpl: MoviesLocalRepository {
     @Injected var baseLocalRepository: BaseLocalRepository
     
-    @Environment(\.modelContext) private var modelContext
-    
     func save(movies: [Movie], completion: @escaping (LocalResult<[Movie], MoviesErrors>) -> Void) {
         do {
-            try modelContext.transaction {
+            try baseLocalRepository.containerContext!.transaction {
                 for movie in movies {
                     baseLocalRepository.containerContext!.insert(movie)
                 }

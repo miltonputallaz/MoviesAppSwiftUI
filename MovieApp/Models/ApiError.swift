@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ApiError {
+struct ApiError {
     let code: Int
     let errorString: String
     

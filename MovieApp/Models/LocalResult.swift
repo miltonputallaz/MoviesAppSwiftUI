@@ -11,4 +11,5 @@ enum LocalResult<Response, CustomError> where Response: Decodable, CustomError: 
     case emptySuccess
     case success(Response)
     case error(CustomError)
+    case timeRequestError
 }
